@@ -17,14 +17,14 @@ public:
     // Constructor seeds the engine with a hardware random device
     RandomGenerator();
 
-    // Generates a vector of N integers between min and max
-    std::vector<u_int8_t> generateVector(size_t size);
-
 protected:
     std::mt19937 _engine; // Mersenne Twister engine
     bool _shutdown;
+
+    // Generates a vector of N integers between min and max
+    std::vector<u_int8_t> generateVector(size_t size);
 };
-    
+
 class RandomExecutor final : public RandomGenerator, public IModule {
 private:
     std::thread _workerThread;
