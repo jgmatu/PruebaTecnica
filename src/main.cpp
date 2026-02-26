@@ -4,7 +4,7 @@
 #include <Actia/Queue.hpp>
 #include <Actia/IModule.hpp>
 
-static const int SIZE = 20;
+static const int SIZE = 50;
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
         module->run();
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(100));
 
     // 3. Stop everithing.
     for (auto& module : pipeline) {
@@ -33,6 +33,6 @@ int main()
     // When you want to wait/delete them:
     pipeline.clear(); // This triggers the destructors (wait) automatically
 
-    std::cout << "Pipeline has been stopped and cleaned up." << std::endl;
+    std::cout << "[Final] Pipeline has been stopped and cleaned up." << std::endl;
     return 0;
 }

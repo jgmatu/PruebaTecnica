@@ -6,7 +6,7 @@ void Logger::print(const std::vector<uint8_t>& data)
 {
     if (data.empty()) return;
 
-    std::cout << std::format("[LOG] Even Vector Found! Last: {:02X}, Last: {:02X}\n", 
+    std::cout << std::format("[LOG] Even Vector Found! Last: {:02X}, Last: {:02d}\n", 
                              data.back(), data.back());
     std::cout << "      Data: ";
     for (auto val : data) {
@@ -26,6 +26,7 @@ void LoggerExecutor::run()
         while (auto item = _outQueue.pop()) {
             print(item.value());
         }
+        _outQueue.shutdown();
     });
 }
 
@@ -43,8 +44,9 @@ void LoggerExecutor::stop()
 
 LoggerExecutor::~LoggerExecutor() {
     wait();
+    std::cout << "[Logger] Shutdown signal received. Closing logger task." << std::endl;
 }
 
-std::unique_ptr<IModule> createLoggerModule(ThreadSafeQueue<std::vector<uint8_t>>& q) {
-    return std::make_unique<LoggerExecutor>(q);
+std::unique_ptr<IModule> createLoggerModule(ThreadSafeQueue<std::vector<uint8_t>>& outQueue) {
+    return std::make_unique<LoggerExecutor>(outQueue);
 }

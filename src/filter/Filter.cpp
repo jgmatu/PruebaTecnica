@@ -37,8 +37,6 @@ void FilterExecutor::run()
                 _outQueue.push(std::move(vec));
             }
         }
-        std::cout << "[Filter] Shutdown signal received. Closing output queue." << std::endl;
-
         // Propagate shutdown to the Logger and RNG
         _outQueue.shutdown();
         _inQueue.shutdown();
@@ -63,11 +61,12 @@ void FilterExecutor::stop()
 FilterExecutor::~FilterExecutor()
 {
     wait();
+    std::cout << "[Filter] Shutdown signal received. Closing filter task." << std::endl;
 }
 
 // Definición de la función declarada en IModule.hpp
-std::unique_ptr<IModule> createFilterModule(ThreadSafeQueue<std::vector<uint8_t>>& in, 
-                                            ThreadSafeQueue<std::vector<uint8_t>>& out) {
+std::unique_ptr<IModule> createFilterModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue, 
+                                            ThreadSafeQueue<std::vector<uint8_t>>& outQueue) {
     // Retornamos la clase concreta como un puntero a la interfaz
-    return std::make_unique<FilterExecutor>(in, out);
+    return std::make_unique<FilterExecutor>(inQueue, outQueue);
 }

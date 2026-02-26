@@ -62,8 +62,9 @@ void RandomExecutor::stop()
 RandomExecutor::~RandomExecutor()
 {
     wait();
+    std::cout << "[Random] Shutdown signal received. Closing random task." << std::endl;
 }
 
-std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& q, int size) {
-    return std::make_unique<RandomExecutor>(q, size);
+std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue, int size) {
+    return std::make_unique<RandomExecutor>(inQueue, size);
 }
