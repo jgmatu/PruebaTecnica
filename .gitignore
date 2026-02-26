@@ -1,0 +1,28 @@
+# --- CMake ---
+build/
+bin/
+lib/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install/
+
+# --- VS Code ---
+.vscode/
+*.code-workspace
+
+# --- Compiled Binaries & Objects ---
+*.o
+*.a
+*.so
+*.out
+# Replace 'MiProyecto' with your actual executable name
+PruebaTecnica
+
+# --- OS / RHEL 10 ---
+.DS_Store
+.directory
+*~
+*.swp
+
