@@ -33,8 +33,10 @@ int main()
     // When you want to wait/delete them:
     pipeline.clear(); // This triggers the destructors (wait) automatically
 
-    std::cout << "Raw queue Empty:" << raw_queue.size() << std::endl;
-    std::cout << "Filter queue Empty:" << filtered_queue.size() << std::endl;
+    auto status = [](bool condition) { return condition ? "OK" : "FAIL"; };
+
+    std::cout << "Raw queue Empty: " << status(raw_queue.size() == 0) << "\n";
+    std::cout << "Filter queue Empty: " << status(filtered_queue.size() == 0) << "\n";
 
     std::cout << "[Final] Pipeline has been stopped and cleaned up." << std::endl;
     return 0;
