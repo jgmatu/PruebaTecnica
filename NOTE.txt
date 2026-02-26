@@ -30,3 +30,7 @@
 	  prueba técnica se ha hecho uso de multiherencia para añadir la interfaz IModule, ya que C++ no
 	  permite el uso de interfaces se debe realizar la implmentación de la interfaz haciendo uso de 
 	  multiherencia.
+
+	- Para evitar el acceso a las clases internas de la interfaz IModule se hace uso de patrón de 
+	  diseño de fabrica, cada fábrica llama de forma interna al módulo para pasar por argumento las
+	  colas a las que puede acceder y evitar el uso de memoria global en el sistema.

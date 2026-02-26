@@ -13,7 +13,7 @@ int main()
 
     // Solo usamos IModule y sus fábricas
     std::vector<std::unique_ptr<IModule>> pipeline;
-    
+
     pipeline.push_back(createRandomModule(raw_queue, SIZE));
     pipeline.push_back(createFilterModule(raw_queue, filtered_queue));
     pipeline.push_back(createLoggerModule(filtered_queue));
