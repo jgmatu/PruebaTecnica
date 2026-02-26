@@ -44,3 +44,7 @@ void LoggerExecutor::stop()
 LoggerExecutor::~LoggerExecutor() {
     wait();
 }
+
+std::unique_ptr<IModule> createLoggerModule(ThreadSafeQueue<std::vector<uint8_t>>& q) {
+    return std::make_unique<LoggerExecutor>(q);
+}

@@ -1,23 +1,23 @@
-#ifndef IMODULE_H
-#define IMODULE_H
+#pragma once
+#include <memory>
+#include <vector>
+#include <cstdint>
 
-/**
- * @brief Interface for asynchronous modules.
- * Ensures all child modules implement basic lifecycle and thread control.
- */
+// Forward declaration de la cola para no incluir todo el header aquí
+template <typename T> class ThreadSafeQueue;
+
 class IModule {
 public:
-    // Virtual destructor is mandatory to prevent memory leaks in derived classes
     virtual ~IModule() = default;
 
-    // Starts the internal logic/thread
     virtual void run() = 0;
-    
-    // Blocks the calling thread until the module completes its work
     virtual void wait() = 0;
-
-    // Signals the module to cease operations
     virtual void stop() = 0;
 };
 
-#endif // IMODULE_H
+// --- FUNCIONES FÁBRICA ---
+// Estas funciones permiten crear los módulos sin que el main conozca las clases hijas
+std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& q, int size);
+std::unique_ptr<IModule> createFilterModule(ThreadSafeQueue<std::vector<uint8_t>>& in,
+        ThreadSafeQueue<std::vector<uint8_t>>& out);
+std::unique_ptr<IModule> createLoggerModule(ThreadSafeQueue<std::vector<uint8_t>>& q);

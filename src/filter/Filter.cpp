@@ -64,3 +64,10 @@ FilterExecutor::~FilterExecutor()
 {
     wait();
 }
+
+// Definición de la función declarada en IModule.hpp
+std::unique_ptr<IModule> createFilterModule(ThreadSafeQueue<std::vector<uint8_t>>& in, 
+                                            ThreadSafeQueue<std::vector<uint8_t>>& out) {
+    // Retornamos la clase concreta como un puntero a la interfaz
+    return std::make_unique<FilterExecutor>(in, out);
+}

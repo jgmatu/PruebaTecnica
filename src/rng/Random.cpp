@@ -63,3 +63,7 @@ RandomExecutor::~RandomExecutor()
 {
     wait();
 }
+
+std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& q, int size) {
+    return std::make_unique<RandomExecutor>(q, size);
+}

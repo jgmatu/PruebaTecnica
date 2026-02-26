@@ -1,10 +1,7 @@
 #include <iostream>
 #include <memory>
 
-#include <Actia/Random.hpp>
 #include <Actia/Queue.hpp>
-#include <Actia/Filter.hpp>
-#include <Actia/Logger.hpp>
 #include <Actia/IModule.hpp>
 
 static const int SIZE = 20;
@@ -14,16 +11,12 @@ int main()
     ThreadSafeQueue<std::vector<u_int8_t>> raw_queue;
     ThreadSafeQueue<std::vector<u_int8_t>> filtered_queue;
 
-    // 1. Create the concrete objects
-    auto rng = std::make_unique<RandomExecutor>(raw_queue, SIZE);
-    auto filter = std::make_unique<FilterExecutor>(raw_queue, filtered_queue);
-    auto logger = std::make_unique<LoggerExecutor>(filtered_queue);
-
+    // Solo usamos IModule y sus fábricas
     std::vector<std::unique_ptr<IModule>> pipeline;
-
-    pipeline.push_back(std::move(rng));
-    pipeline.push_back(std::move(filter));
-    pipeline.push_back(std::move(logger));
+    
+    pipeline.push_back(createRandomModule(raw_queue, SIZE));
+    pipeline.push_back(createFilterModule(raw_queue, filtered_queue));
+    pipeline.push_back(createLoggerModule(filtered_queue));
 
     // 2. Start the whole pipeline
     for (auto& module : pipeline) {
