@@ -17,8 +17,7 @@ bool RandomFilter::process(const std::vector<u_int8_t>& data)
 FilterExecutor::FilterExecutor(ThreadSafeQueue<std::vector<uint8_t>>& inQueue,
                         ThreadSafeQueue<std::vector<uint8_t>>& outQueue) :
     _inQueue(inQueue),
-    _outQueue(outQueue),
-    _filter()
+    _outQueue(outQueue)
 {
     ;
 }
@@ -27,26 +26,22 @@ void FilterExecutor::run()
 {
     _workerThread = std::thread([this]() {
         std::cout << "[Filter] Asynchronous processing started." << std::endl;
-        
-        for (;;)
+
+        while (auto item = _inQueue.pop())
         {
-            auto item = _inQueue.pop();
-
-            // 1. Safety check for shutdown signal
-            if (!item.has_value()) {
-                std::cout << "[Filter] Shutdown signal received. Closing output queue." << std::endl;
-                _outQueue.shutdown(); // Propagate shutdown to the Logger
-                break;
-            }
-
             auto& vec = item.value();
 
-            // 2. Filter logic: check if the LAST element is EVEN (par) using bitmask
-            if (_filter.process(vec))
+            // Filter logic: check if the LAST element is EVEN (par) using bitmask
+            if (process(vec))
             {
                 _outQueue.push(std::move(vec));
             }
         }
+        std::cout << "[Filter] Shutdown signal received. Closing output queue." << std::endl;
+
+        // Propagate shutdown to the Logger and RNG
+        _outQueue.shutdown();
+        _inQueue.shutdown();
     });
 }
 // Ensures the thread finishes before we access data
@@ -55,6 +50,13 @@ void FilterExecutor::wait()
     if (_workerThread.joinable()) {
         _workerThread.join();
     }
+}
+
+void FilterExecutor::stop()
+{
+    // Propagate shutdown to the Logger and RNG
+    _outQueue.shutdown();
+    _inQueue.shutdown();
 }
 
 // Destructor: important to prevent crashes if you forget to join

@@ -6,8 +6,8 @@ void Logger::print(const std::vector<uint8_t>& data)
 {
     if (data.empty()) return;
 
-    std::cout << std::format("[LOG] Even Vector Found! First: {:02X}, Last: {:02X}\n", 
-                             data.front(), data.back());
+    std::cout << std::format("[LOG] Even Vector Found! Last: {:02X}, Last: {:02X}\n", 
+                             data.back(), data.back());
     std::cout << "      Data: ";
     for (auto val : data) {
         std::cout << std::format("{:02X} ", val);
@@ -16,30 +16,29 @@ void Logger::print(const std::vector<uint8_t>& data)
 }
 
 LoggerExecutor::LoggerExecutor(ThreadSafeQueue<std::vector<uint8_t>>& queue)
-    : _queue(queue), _logger() {}
+    : _outQueue(queue) {}
 
-void LoggerExecutor::run() {
+void LoggerExecutor::run()
+{
     _workerThread = std::thread([this]() {
         std::cout << "[Logger] Asynchronous logger started." << std::endl;
-        
-        for (;;) {
-            auto item = _queue.pop();
 
-            if (!item.has_value()) {
-                std::cout << "[Logger] Pipeline closed. Exiting logger." << std::endl;
-                break;
-            }
-
-            // Call the internal logger to handle the formatting/printing
-            _logger.print(item.value());
+        while (auto item = _outQueue.pop()) {
+            print(item.value());
         }
     });
 }
 
-void LoggerExecutor::wait() {
+void LoggerExecutor::wait()
+{
     if (_workerThread.joinable()) {
         _workerThread.join();
     }
+}
+
+void LoggerExecutor::stop()
+{
+    _outQueue.shutdown();
 }
 
 LoggerExecutor::~LoggerExecutor() {

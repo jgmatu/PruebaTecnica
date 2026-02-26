@@ -9,6 +9,7 @@
 #include <format>
 
 #include <Actia/Queue.hpp>
+#include <Actia/IModule.hpp>
 
 class RandomGenerator {
 
@@ -19,24 +20,27 @@ public:
     // Generates a vector of N integers between min and max
     std::vector<u_int8_t> generateVector(size_t size);
 
-private:
+protected:
     std::mt19937 _engine; // Mersenne Twister engine
+    bool _shutdown;
 };
-
-class RandomExecutor {
+    
+class RandomExecutor final : public RandomGenerator, public IModule {
 private:
     std::thread _workerThread;
     ThreadSafeQueue<std::vector<u_int8_t>>& _inQueue;
-    RandomGenerator _rng;
+    const size_t _size;
 
 public:
-    RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue);
+    RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue, const size_t size);
 
     // Takes a reference to a vector and fills it asynchronously
-    void run(size_t iterations, size_t size);
+    void run() override;
 
     // Ensures the thread finishes before we access data
-    void wait();
+    void wait() override;
+
+    void stop() override;
 
     // Destructor: important to prevent crashes if you forget to join
     ~RandomExecutor();

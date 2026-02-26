@@ -21,31 +21,41 @@ std::vector<u_int8_t> RandomGenerator::generateVector(size_t size)
     return vec;
 }
 
-RandomExecutor::RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue) :
-    _inQueue(inQueue)
+RandomExecutor::RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue, const size_t size) :
+    _inQueue(inQueue),
+    _size(size)
 {
-    ;
+    _shutdown = false;
 }
 
 // Takes a reference to a vector and fills it asynchronously
-void RandomExecutor::run(size_t iterations, size_t size)
+void RandomExecutor::run()
 {
     // Anonymous function (lambda) capturing by reference [&]
-    _workerThread = std::thread([this, iterations, size]() {
-        for (size_t i = 0; i < iterations; ++i)
+    _workerThread = std::thread([this]() {
+        while (!_shutdown)
         {
-            _inQueue.push(_rng.generateVector(size));
+            _inQueue.push(generateVector(_size));
+
+            // Simulate latency in data input.
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         _inQueue.shutdown();
     });
 }
 
 // Ensures the thread finishes before we access data
+
 void RandomExecutor::wait()
 {
     if (_workerThread.joinable()) {
         _workerThread.join();
     }
+}
+
+void RandomExecutor::stop()
+{
+    _shutdown = true;
 }
 
 // Destructor: important to prevent crashes if you forget to join

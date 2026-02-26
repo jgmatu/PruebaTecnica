@@ -4,14 +4,22 @@
 #include <vector>
 #include <cstdint>
 #include <thread>
-#include <Actia/Queue.hpp>
 
-class Logger final {
+#include <Actia/Queue.hpp>
+#include <Actia/IModule.hpp>
+
+
+class Logger {
 public:
+    Logger() { };
+    virtual ~Logger() = default;
+
+protected:
     void print(const std::vector<uint8_t>& data);
 };
 
-class LoggerExecutor final {
+class LoggerExecutor final : public Logger, public IModule {
+
 public:
     explicit LoggerExecutor(ThreadSafeQueue<std::vector<uint8_t>>& queue);
     ~LoggerExecutor();
@@ -22,9 +30,10 @@ public:
     // Explicitly wait for the logger to finish processing
     void wait();
 
+    void stop();
+
 private:
-    ThreadSafeQueue<std::vector<uint8_t>>& _queue;
-    Logger _logger;
+    ThreadSafeQueue<std::vector<uint8_t>>& _outQueue;
     std::thread _workerThread;
 };
 
