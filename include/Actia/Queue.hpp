@@ -31,7 +31,7 @@ public:
         std::unique_lock<std::mutex> lock(mutex);
 
         // Wait until there is data OR we are finished
-        cond.wait(lock, [this] { return !queue.empty() || finished;  });
+        cond.wait(lock, [this] { return !queue.empty() || finished; });
 
         // If the queue is empty AND finished is true, then stop.
         // If finished is true BUT the queue still has data, we should 
@@ -53,6 +53,11 @@ public:
             finished = true;
         }
         cond.notify_all();
+    }
+
+    size_t size() {
+        std::lock_guard<std::mutex> lock(mutex);
+        return queue.size();
     }
 };
 #endif
