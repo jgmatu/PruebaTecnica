@@ -29,10 +29,9 @@ class RandomExecutor final : public RandomGenerator, public IModule {
 private:
     std::thread _workerThread;
     ThreadSafeQueue<std::vector<u_int8_t>>& _inQueue;
-    const size_t _size;
 
 public:
-    RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue, const size_t size);
+    RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue);
 
     // Takes a reference to a vector and fills it asynchronously
     void run() override;

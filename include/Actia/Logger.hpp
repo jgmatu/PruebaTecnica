@@ -4,18 +4,26 @@
 #include <vector>
 #include <cstdint>
 #include <thread>
+#include <fstream>
+#include <iostream>
+#include <format>
+#include <chrono>
 
 #include <Actia/Queue.hpp>
 #include <Actia/IModule.hpp>
 
+#define LOG_FILE "log/log.txt"
 
 class Logger {
 public:
-    Logger() { };
-    virtual ~Logger() = default;
+    Logger();
+    virtual ~Logger();
 
 protected:
     void print(const std::vector<uint8_t>& data);
+    void writeToStream(std::ostream& os, const std::string& timeStr, const std::vector<uint8_t>& data);
+
+    std::ofstream _outputFile;
 };
 
 class LoggerExecutor final : public Logger, public IModule {

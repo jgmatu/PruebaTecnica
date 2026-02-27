@@ -17,7 +17,7 @@ public:
 
 // --- FUNCIONES FÁBRICA ---
 // Estas funciones permiten crear los módulos sin que el main conozca las clases hijas.
-std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue, int size);
+std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue);
 std::unique_ptr<IModule> createFilterModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue,
         ThreadSafeQueue<std::vector<uint8_t>>& outQueue);
 std::unique_ptr<IModule> createLoggerModule(ThreadSafeQueue<std::vector<uint8_t>>& outQueue);

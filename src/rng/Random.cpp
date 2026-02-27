@@ -21,9 +21,8 @@ std::vector<u_int8_t> RandomGenerator::generateVector(size_t size)
     return vec;
 }
 
-RandomExecutor::RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue, const size_t size) :
-    _inQueue(inQueue),
-    _size(size)
+RandomExecutor::RandomExecutor(ThreadSafeQueue<std::vector<u_int8_t>>& inQueue) :
+    _inQueue(inQueue)
 {
     _shutdown = false;
 }
@@ -35,7 +34,9 @@ void RandomExecutor::run()
     _workerThread = std::thread([this]() {
         while (!_shutdown)
         {
-            _inQueue.push(generateVector(_size));
+            // Generate a vector of size [0, 100]
+            std::uniform_int_distribution<u_int8_t> distr(0, 100);
+            _inQueue.push(generateVector(distr(_engine)));
 
             // Simulate latency in data input.
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -65,6 +66,6 @@ RandomExecutor::~RandomExecutor()
     std::cout << "[Random] Shutdown signal received. Closing random task." << std::endl;
 }
 
-std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue, int size) {
-    return std::make_unique<RandomExecutor>(inQueue, size);
+std::unique_ptr<IModule> createRandomModule(ThreadSafeQueue<std::vector<uint8_t>>& inQueue) {
+    return std::make_unique<RandomExecutor>(inQueue);
 }
