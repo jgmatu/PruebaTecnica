@@ -1,5 +1,4 @@
-#ifndef LOGGER_HPP
-#define LOGGER_HPP
+#pragma once
 
 #include <vector>
 #include <cstdint>
@@ -44,5 +43,3 @@ private:
     ThreadSafeQueue<std::vector<uint8_t>>& _outQueue;
     std::thread _workerThread;
 };
-
-#endif

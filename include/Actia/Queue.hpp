@@ -1,5 +1,4 @@
-#ifndef QUEUE_HPP
-#define QUEUE_HPP
+#pragma once
 
 #include <queue>
 #include <mutex>
@@ -60,4 +59,3 @@ public:
         return queue.size();
     }
 };
-#endif

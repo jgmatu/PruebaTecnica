@@ -1,5 +1,4 @@
-#ifndef RANDOM_HPP
-#define RANDOM_HPP
+#pragma once
 
 #include <vector>
 #include <random>
@@ -44,5 +43,3 @@ public:
     // Destructor: important to prevent crashes if you forget to join
     ~RandomExecutor();
 };
-
-#endif

@@ -1,37 +1,34 @@
 cmake_minimum_required(VERSION 3.10)
-
-# Nombre del proyecto y versión
 project(Actia VERSION 1.0 LANGUAGES CXX)
 
-# Forzar el estándar C++ 17 o 20 (recomendado para RHEL 10)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Carpeta donde se guardarán los archivos compilados (opcional)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-add_compile_options(-g)
-
-# Buscar archivos fuente automáticamente (o lístalos manualmente)
-file(GLOB SOURCES 
+# 1. Define the Library (Your logic/modules)
+# List your sources but EXCLUDE main.cpp
+file(GLOB LIB_SOURCES 
     "src/rng/*.cpp"
     "src/filter/*.cpp"
     "src/logger/*.cpp"
-    "src/*.cpp" 
-    "main.cpp"
 )
 
-# Crear el ejecutable
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_library(ActiaLib STATIC ${LIB_SOURCES})
 
-# Directorios de inclusión (headers)
-target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_include_directories(${PROJECT_NAME} PRIVATE src)
+# 2. Set Header Scopes
+target_include_directories(ActiaLib 
+    PUBLIC 
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
-# Ejemplo: Si necesitas añadir librerías externas (ej. Threads)
+# 3. Define the Executable (The "User" of the library)
+add_executable(ActiaApp src/main.cpp)
+
+# 4. Link the Library to the App
+# ActiaApp will inherit PUBLIC headers (include/), but NOT PRIVATE headers (src/)
+target_link_libraries(ActiaApp PRIVATE ActiaLib)
+
+# Optional: Threads
 find_package(Threads REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
-
-# Mensaje de confirmación al configurar
-message(STATUS "Proyecto configurado para: ${PROJECT_NAME}")
+target_link_libraries(ActiaLib PRIVATE Threads::Threads)
