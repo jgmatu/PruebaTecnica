@@ -22,15 +22,16 @@ int main()
         module->run();
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(10));
 
     // 3. Stop everithing.
     for (auto& module : pipeline) {
         module->stop();
     }
 
-    // When you want to wait/delete them:
-    pipeline.clear(); // This triggers the destructors (wait) automatically
+    for (auto& module : pipeline) {
+        module.reset(); // Safely deletes the object and sets pointer to nullptr
+    }
 
     auto status = [](bool condition) { return condition ? "OK" : "FAIL"; };
 
