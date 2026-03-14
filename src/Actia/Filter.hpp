@@ -25,12 +25,12 @@ public:
     ~FilterExecutor();
 
     // Starts the filtering process in a background thread
-    void run();
+    void run() override;
 
     // Stops and joins the thread
-    void wait();
+    void wait() override;
 
-    void stop();
+    void stop() override;
 
 private:
     ThreadSafeQueue<std::vector<uint8_t>>& _inQueue;

@@ -32,12 +32,12 @@ public:
     ~LoggerExecutor();
 
     // Starts the logging thread
-    void run();
+    void run() override;
     
     // Explicitly wait for the logger to finish processing
-    void wait();
+    void wait() override;
 
-    void stop();
+    void stop() override;
 
 private:
     ThreadSafeQueue<std::vector<uint8_t>>& _outQueue;
