@@ -7,6 +7,7 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 install/
+log/
 
 # --- VS Code ---
 .vscode/
@@ -25,4 +26,3 @@ PruebaTecnica
 .directory
 *~
 *.swp
-
