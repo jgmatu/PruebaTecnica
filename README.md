@@ -38,4 +38,5 @@
 ``` bash
 cmake -S . -B build
 make -j$(nproc) -C build
+mkdir -p log
 ```
