@@ -34,3 +34,8 @@
 	- Para evitar el acceso a las clases internas de la interfaz IModule se hace uso de patrón de 
 	  diseño de fabrica, cada fábrica llama de forma interna al módulo para pasar por argumento las
 	  colas a las que puede acceder y evitar el uso de memoria global en el sistema.
+
+``` bash
+cmake -S . -B build
+make -j$(nproc) -C build
+```
