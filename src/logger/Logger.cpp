@@ -10,7 +10,7 @@ Logger::Logger()
     catch (const std::ofstream::failure& e)
     {
         std::cerr << "File I/O Error: " << LOG_FILE << " - " << e.what() << std::endl;
-        throw; // Re-raise the exception to signal failure
+        // throw; // Re-raise the exception to signal failure
     }
     catch(const std::exception& e)
     {
